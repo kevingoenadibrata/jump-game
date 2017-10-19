@@ -1,0 +1,35 @@
+*{
+  margin: 0;
+  padding: 0;
+  font-family: 'Open Sans', sans-serif;
+}
+
+body{
+  background-color: rgb(55, 66, 77);
+}
+
+.container{
+  width: 100vw;
+  height:100vh;
+  background-color: rgb(55, 66, 77);
+  text-align: center;
+  overflow: hidden; 
+}
+
+canvas{
+  width:1000px;
+  height:750px;
+  background-color: white;
+  border: solid 5px rgb(68, 125, 135);
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/**/
+.class{
+}
+
+#id{
+}
+/**/
