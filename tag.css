@@ -1,0 +1,23 @@
+
+/* add this line on html
+
+<p id="madetag">&#128126;made by <a href="https://kevingoenadibrata.com">kevingo</a></p>
+
+*/
+
+#madetag{
+  font-family: neue-haas-grotestk-display, sans-serif;
+  font-weight: 500;
+  color: white;
+}
+
+#madetag a{
+  font-family: neue-haas-grotestk-display, sans-serif;
+  font-weight: 600;
+  color: white;
+  transition-duration: 300ms;
+}
+
+#madetag a:hover{
+  opacity: 0.5
+}

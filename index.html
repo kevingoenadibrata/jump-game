@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Game Test</title>
+    <title>Fruitzard</title>
     <link rel="stylesheet" type="text/css" href="main.css"/>
+    <link rel="stylesheet" type="text/css" href="tag.css"/>
+    <link rel="stylesheet" href="https://use.typekit.net/xzh5nvs.css">
+    <link rel="icon" href="img/favicon.png" type="image/png" sizes="16x16">
   </head>
 
   <body onload="start()">
     <div class="container">
-    <canvas id="c"></canvas>
+      <div class="info-container">
+        <canvas id="info-c"></canvas>
+        <img id="instructions" src="img/instructions.png" />
+        <p id="madetag">&#128126;made by <a href="https://kevingoenadibrata.com">kevingo</a></p>
+      </div>
+      <canvas id="c"></canvas>
+
     </div>
     <script src="app.js"> </script>
   </body>

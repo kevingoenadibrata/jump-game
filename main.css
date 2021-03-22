@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   font-family: 'Open Sans', sans-serif;
+  user-select: none;
 }
 
 body{
@@ -12,24 +13,38 @@ body{
   width: 100vw;
   height:100vh;
   background-color: rgb(55, 66, 77);
-  text-align: center;
-  overflow: hidden; 
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
-canvas{
-  width:1000px;
-  height:750px;
+#c{
+  width:630px;
+  height:630px;
   background-color: white;
-  border: solid 5px rgb(68, 125, 135);
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
+  border: solid 5px #57719c;
 }
 
-/**/
-.class{
+#info-c{
+  width: 250px;
+  height: 250px;
+  background-color: white;
 }
 
-#id{
+.info-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 640px;
+  margin-right: 10px;
 }
-/**/
+
+#instructions{
+  width: 250px;
+  height: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

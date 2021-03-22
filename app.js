@@ -1,6 +1,6 @@
-var xLoc = 225;
-var yLoc = 50;
-var padding = 10;
+var xLoc = 0;
+var yLoc = 0;
+var padding = 0;
 var size = 70;
 var dist = padding + size;
 var rad = 10;
@@ -9,6 +9,9 @@ var timer = 0;
 
 var cnvs = document.getElementById("c");
 var ctx = cnvs.getContext('2d');
+
+var cnvsInfo = document.getElementById("info-c");
+var ctxInfo = cnvsInfo.getContext('2d');
 
 var tiles = [[],[],[],[],[],[],[],[],[]];
 var block = [[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],
@@ -34,9 +37,32 @@ var coinCount = 0;
 var playGame = true;
 var moveCoin = false;
 
+var mapImg = new Image();
+mapImg.src = 'img/map.png';
+
+var charImg = new Image();
+charImg.src = 'img/character.png';
+
+var appleImg = new Image();
+appleImg.src = 'img/apple.png';
+
+var orangeImg = new Image();
+orangeImg.src = 'img/orange.png';
+
+var bananaImg = new Image();
+bananaImg.src = 'img/banana.png';
+
+var scoreImg = new Image();
+scoreImg.src = 'img/scoreboard.png';
+
+var eatcounter = 0;
+
 function start(){
-  cnvs.width = 1000;
-  cnvs.height = 750;
+  cnvs.width = 630;
+  cnvs.height = 630;
+
+  cnvsInfo.width = 250;
+  cnvsInfo.height = 250;
   checkCookie();
   restart();
   setup();
@@ -46,10 +72,11 @@ function start(){
   setInterval(update, 10);
 
   window.addEventListener('keydown', function (e) {
-      if(e.keyCode == 37 && playGame){left();} //left
-      else if(e.keyCode == 38 && playGame){up();} //up
-      else if(e.keyCode == 39 && playGame){right();} //right
-      else if(e.keyCode == 40 && playGame){down();} //down
+      var walkvalue = e.shiftKey ? 2 : 1;
+      if(e.keyCode == 37 && playGame){left(walkvalue);} //left
+      else if(e.keyCode == 38 && playGame){up(walkvalue);} //up
+      else if(e.keyCode == 39 && playGame){right(walkvalue);} //right
+      else if(e.keyCode == 40 && playGame){down(walkvalue);} //down
       else if(e.keyCode == 32 && !playGame){restart(); randomCoin();}
 
       if(tiles[mainIDX][mainIDY].avail == false){gameOver();}
@@ -71,47 +98,60 @@ function setup(){
 
   for(var i = 0; i < 9; i++){
     for(var j = 0; j < 9; j++){
-      ctx.fillStyle = "rgb(33, 70, 94)";
-      ctx.fillRect(xLoc + dist * i, yLoc + dist * j, size, size);
       tiles[i][j] = new tile(i,j);
     }
   }
 
   for(var i = 0; i < 60; i++){
-    ctx.fillStyle = "rgb(173, 216, 237)";
-    ctx.fillRect(tiles[block[i][0]][block[i][1]].locX, tiles[block[i][0]][block[i][1]].locY, size, size);
     tiles[block[i][0]][block[i][1]].avail = false;
   }
 
-  ctx.fillStyle = "rgb(36, 226, 157)";
-  ctx.fillRect(mainX, mainY, size-20, size-20);
+  ctx.drawImage(mapImg, xLoc, yLoc);
+  ctx.drawImage(charImg, mainX-35, mainY-50);
 
-  ctx.font = "30px Open Sans";
-  ctx.fillStyle = "#242424";
-  ctx.fillText(points,30,50);
-
-  ctx.font = "30px Open Sans";
-  ctx.fillStyle = "#242424";
-  ctx.fillText(highScore,30,80);
+  ctxInfo.drawImage(scoreImg, 0, 0, 250, 250);
+  ctxInfo.font = "30px mono45-headline";
+  ctxInfo.strokeStyle = '#31241f';
+  ctxInfo.lineWidth = 8;
+  ctxInfo.strokeText(points, 30, 100);
+  ctxInfo.strokeText(highScore, 30, 200);
+  ctxInfo.fillStyle = "#ffffff";
+  ctxInfo.fillText(points,30,100);
+  ctxInfo.fillText(highScore,30,200);
 
   if(moveCoin){
     randomCoin();
+    eatcounter = eatcounter === 2 ? 0 : eatcounter+1;
   }
   else{
-    drawCircle(ctx, rad, tiles[coinX][coinY].locX + size/2, tiles[coinX][coinY].locY + size/2, "rgb(212, 155, 30)");
+    // drawCircle(ctx, rad, tiles[coinX][coinY].locX + size/2, tiles[coinX][coinY].locY + size/2, "rgb(212, 155, 30)");
+    ctx.globalAlpha = rad/10;
+    if(eatcounter === 0)
+      ctx.drawImage(appleImg, tiles[coinX][coinY].locX + 17, tiles[coinX][coinY].locY + 12);
+    else if(eatcounter === 1)
+      ctx.drawImage(bananaImg, tiles[coinX][coinY].locX + 17, tiles[coinX][coinY].locY + 12);
+    else
+      ctx.drawImage(orangeImg, tiles[coinX][coinY].locX + 17, tiles[coinX][coinY].locY + 12);
+    ctx.globalAlpha = 1;
   }
 
   if(!playGame){
     ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
     ctx.fillRect(0,0,cnvs.width, cnvs.height);
 
-    ctx.font = "50px Open Sans";
+    ctx.font = "500 50px mono45-headline";
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 8;
+    ctx.strokeText("GAME OVER",cnvs.width/2-100,cnvs.height/2);
     ctx.fillStyle = "white";
-    ctx.fillText("GAME OVER",cnvs.width/2-143,cnvs.height/2);
+    ctx.fillText("GAME OVER",cnvs.width/2-100,cnvs.height/2);
 
-    ctx.font = "30px Open Sans";
+    ctx.font = "300 30px mono45-headline";
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 8;
+    ctx.strokeText("PRESS SPACE TO PLAY AGAIN",cnvs.width/2-165,cnvs.height/2+35);
     ctx.fillStyle = "white";
-    ctx.fillText("PRESS SPACE TO PLAY AGAIN",cnvs.width/2-203,cnvs.height/2+45);
+    ctx.fillText("PRESS SPACE TO PLAY AGAIN",cnvs.width/2-165,cnvs.height/2+35);
   }
   if(timer % 20 == 0){
     if(playGame){rad--;}
@@ -165,8 +205,8 @@ function update(){
 }
 
 function restart(){
-  mainX= 475;
-  mainY= 350;
+  mainX= 315;
+  mainY= 315;
   xLoc = (cnvs.width - size * 9 - padding * 8)/2;
   yLoc = (cnvs.height - size * 9 - padding * 8)/2;
   mainIDX = 4;
@@ -211,19 +251,23 @@ function randomCoin(){
   moveCoin = false;
 }
 
-function up(){
-  mainY -= dist;
-  mainIDY -= 1;
+function up(walkvalue){
+  mainY -= dist * walkvalue;
+  if(mainIDY - walkvalue < 0) gameOver();
+  mainIDY -= walkvalue;
 }
-function down(){
-  mainY += dist;
-  mainIDY += 1;
+function down(walkvalue){
+  mainY += dist * walkvalue;
+  if(mainIDY + walkvalue > 8) gameOver();
+  mainIDY += walkvalue;
 }
-function right(){
-  mainX += dist;
-  mainIDX += 1;
+function right(walkvalue){
+  mainX += dist * walkvalue;
+  if(mainIDX + walkvalue > 8) gameOver();
+  mainIDX += walkvalue;
 }
-function left(){
-  mainX -= dist;
-  mainIDX -= 1;
+function left(walkvalue){
+  mainX -= dist * walkvalue;
+  if(mainIDX - walkvalue < 0) gameOver();
+  mainIDX -= walkvalue;
 }
